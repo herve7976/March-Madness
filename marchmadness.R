@@ -31,6 +31,12 @@ tourney_slots_h=fread("tourney_slots.csv",header=TRUE)
 View(result_season_h)
 
 
+# Voir plus en detail juste pour 2014 ----------------------------------------------------
+
+# Les 5 equipes qui ont remporte le plus de match 
+result_2014=result_season_h[season==2014][,.N,by=wteam][order(N,decreasing=TRUE)]
+top32_team_2014=team[team_id %in% head(result_2014[,wteam],32)]
+
 # Les tops 5 sur tous les ans ----------------------------------------------------------
 
 
@@ -39,27 +45,20 @@ herve=function(x)
   result_all=result_season_h[season==x][,.N,by=wteam][order(N,decreasing=TRUE)]
   top5_team=team[team_id %in% head(result_2014[,wteam],5)]
 }
- 
+
 herve2=lapply(unique(result_season_h[order(season,decreasing=TRUE),season]),herve)
 
 herve3=do.call(rbind,herve2)
 
 herve4=herve3[,.N,by=team_name][order(N,decreasing=TRUE)]
-tail(herve4,1)
 
-
-# Voir plus en detail juste pour 2014 ----------------------------------------------------
-
-# Les 5 equipes qui ont remporte le plus de match 
-result_2014=result_season_h[season==2014][,.N,by=wteam][order(N,decreasing=TRUE)]
-top32_team_2014=team[team_id %in% head(result_2014[,wteam],32)]
 
 
 
 # pour toutes les annees --------------------------------------------------
 
-id_winners=tourney_h[daynum==max(daynum),wteam,by=season]
-team_winners=team[team_id %in% id_winners,team_name]
+id_winners=tourney_h[tourney_h$daynum==max(daynum),wteam,by=season]
+team_winners=team[team_id %in% id_winners$wteam,team_name]
 
 setnames(id_winners,"wteam","team_id")
 setkey(team,team_id)
@@ -67,11 +66,13 @@ setkey(id_winners,team_id)
 
 annee_winners=merge(id_winners,team)[base::order(season,decreasing=TRUE)]
 
-annee_winners[,list(.N,vieux=min(season),recent=max(season)),by=team_name]
+annee_winners2=annee_winners[,list(.N,vieux=min(season),recent=max(season)),by=team_name]
 
-annee_winners_top3=head(annee_winners[,team_name],3)
-
+annee_winners3=annee_winners2[base::order(N,decreasing=TRUE)]
 # Pour les 3 derniers gagnants --------------------------------------------
+
+annee_winners_top3=head(annee_winners3[,team_name],3)
+
 
 # recherche de donnees ----------------------------------------------------
 
@@ -149,8 +150,8 @@ find_seasons_url_2000=function(x){
   essaie3=essaie_node5[grep("[[:digit:]]",V1)]
   essaie3$V1=as.character(essaie3$V1)
   c=grepl("[a-z]",essaie3$V1)
-  essaie4=ifelse(length(c[c==TRUE])>0,essaie3[-grep("[a-z]",V1)],essaie3)
-#   essaie4=essaie3[1:min(grep("2000",V1))]
+  if(length(c[c==TRUE])>0){essaie4=essaie3[-grep("[a-z]",V1)]}
+  else {essaie4=essaie3}  
   essaie5=cbind(rep(team_hacked4[10,team_name],nrow(essaie1)),seasons=essaie4,seasons_url=paste(rep(base_url,nrow(essaie1)),essaie1[,V1],sep=""))
   essaie5$season=as.numeric(substr(as.character(essaie5$seasons.V1),1,4))
   essaie6=essaie5[season>=2000]
