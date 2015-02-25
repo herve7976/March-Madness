@@ -1,35 +1,35 @@
 library(XML)
 library(data.table)
 
+# setwd("") # A faire au tout debut
 
-result_season_h=fread("C:\\Users\\Herve\\Dropbox\\Projet\\Projets R\\March Madness\\regular_season_compact_results.csv",header=TRUE)
-str(result_season_h)
+result_season_h=fread("regular_season_compact_results.csv",header=TRUE)
+# str(result_season_h)
 
 
-result_season_d_h=fread("C:\\Users\\Herve\\Dropbox\\Projet\\Projets R\\March Madness\\regular_season_detailed_results.csv",header=TRUE)
-str(result_season_d_h)
+result_season_d_h=fread("regular_season_detailed_results.csv",header=TRUE)
+# str(result_season_d_h)
 
-season_h=fread("C:\\Users\\Herve\\Dropbox\\Projet\\Projets R\\March Madness\\seasons.csv",header=TRUE)
-str(season_h)
+season_h=fread("seasons.csv",header=TRUE)
+# str(season_h)
 
-team=fread("C:\\Users\\Herve\\Dropbox\\Projet\\Projets R\\March Madness\\teams.csv",header=TRUE)
-str(team)
+team=fread("teams.csv",header=TRUE)
+# str(team)
 
-tourney_h=fread("C:\\Users\\Herve\\Dropbox\\Projet\\Projets R\\March Madness\\tourney_compact_results.csv",header=TRUE)
-str(tourney_h)
+tourney_h=fread("tourney_compact_results.csv",header=TRUE)
+# str(tourney_h)
 
-tourney_d_h=fread("C:\\Users\\Herve\\Dropbox\\Projet\\Projets R\\March Madness\\tourney_detailed_results.csv",header=TRUE)
-str(tourney_d_h)
+tourney_d_h=fread("tourney_detailed_results.csv",header=TRUE)
+# str(tourney_d_h)
 
-tourney_seeds_h=fread("C:\\Users\\Herve\\Dropbox\\Projet\\Projets R\\March Madness\\tourney_seeds.csv",header=TRUE)
-str(tourney_seeds_h)
+tourney_seeds_h=fread("tourney_seeds.csv",header=TRUE)
+# str(tourney_seeds_h)
 
-tourney_slots_h=fread("C:\\Users\\Herve\\Dropbox\\Projet\\Projets R\\March Madness\\tourney_slots.csv",header=TRUE)
-str(tourney_slots_h)
+tourney_slots_h=fread("tourney_slots.csv",header=TRUE)
+# str(tourney_slots_h)
 
 View(result_season_h)
 
-annee=tourney_h_2014=tourney_h[season==2014]
 
 # Les tops 5 sur tous les ans ----------------------------------------------------------
 
@@ -122,8 +122,10 @@ paste_url=paste(rep("http://www.sports-reference.com",nrow(team_hacked2)),team_h
 team_hacked3=cbind(team_hacked2,paste_url)
 team_hacked4=team_hacked3[,team_url:=NULL]
 team_hacked4$From=as.numeric(as.character(team_hacked4$From))
-team_hacked4$To=as.numeric(as.character(team_hacked4$To))
-write.table(team_hacked4,"all_team_ever.txt")
+
+team_hacked4$To=as.numeric(as.character(team_hacked4$To)) #Extraction deja faite
+# write.table(team_hacked4,"all_team_ever.txt") #Extraction deja faite
+
 team_hacked5=team_hacked4[From<=2000]
 team_hacked6=team_hacked4[From>2000]
 team_hacked7=team_hacked5[To>2000]
