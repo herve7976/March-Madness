@@ -114,10 +114,47 @@ setkey(team_hack1,team_name)
 setkey(all_team_ever4,team_name)
 
 team_hacked2=merge(all_team_ever4,team_hack1)
-View(team_hacked2)
+View(team_hacked4)
 
 # Aller chercher pour chaque equipe les joueurs ---------------------------
-
+base_url="http://www.sports-reference.com"
 paste_url=paste(rep("http://www.sports-reference.com",nrow(team_hacked2)),team_hacked2[,team_url],sep="")
 team_hacked3=cbind(team_hacked2,paste_url)
-str(team_hacked3)
+team_hacked4=team_hacked3[,team_url:=NULL]
+team_hacked4$From=as.numeric(as.character(team_hacked4$From))
+team_hacked4$To=as.numeric(as.character(team_hacked4$To))
+write.table(team_hacked4,"all_team_ever.txt")
+team_hacked5=team_hacked4[From<=2000]
+team_hacked6=team_hacked4[From>2000]
+team_hacked7=team_hacked5[To>2000]
+team_hacked8=team_hacked6[To>2000]
+
+find_seasons_url_2000=function(x){
+  
+  teams_seasons_url=data.table()
+  
+  essaie_url=getURL(team_hacked4[10,paste_url])
+  essaie_doc=htmlParse(essaie_url)
+  essaie_nodes=getNodeSet(essaie_doc,"//table[@id]//td[@align='left']//a")
+  essaie_nodes2=lapply(essaie_nodes,xmlGetAttr,"href")
+  essaie_node3=data.table(do.call(rbind,essaie_nodes2))
+  essaie_nodes4=lapply(essaie_nodes,xmlValue)
+  essaie_node5=data.table(do.call(rbind,essaie_nodes4))
+  
+  
+  essaie1=essaie_node3[grep("schools",V1)]
+#   essaie2=essaie1[1:min(grep("2001",V1))]
+  essaie3=essaie_node5[grep("[[:digit:]]",V1)]
+  essaie3$V1=as.character(essaie3$V1)
+  c=grepl("[a-z]",essaie3$V1)
+  essaie4=ifelse(length(c[c==TRUE])>0,essaie3[-grep("[a-z]",V1)],essaie3)
+#   essaie4=essaie3[1:min(grep("2000",V1))]
+  essaie5=cbind(rep(team_hacked4[10,team_name],nrow(essaie1)),seasons=essaie4,seasons_url=paste(rep(base_url,nrow(essaie1)),essaie1[,V1],sep=""))
+  essaie5$season=as.numeric(substr(as.character(essaie5$seasons.V1),1,4))
+  essaie6=essaie5[season>=2000]
+  essaie6
+teams_seasons_url=rbind(teams_seasons_url,essaie6)
+}
+length(grepl("[[:alpha:]]",essaie3$V1))>0
+
+#Arevoir demain
