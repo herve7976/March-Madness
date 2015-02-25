@@ -54,11 +54,22 @@ team_hacked3[3,paste_url]
         
 readHTMLTable(team_hacked3[3,paste_url])
 
+base_url="http://www.sports-reference.com"
+
 essaie_url=getURL(team_hacked3[3,paste_url])
 essaie_doc=htmlParse(essaie_url)
 essaie_nodes=getNodeSet(essaie_doc,"//table[@id]//td[@align='left']//a")
 essaie_nodes2=lapply(essaie_nodes,xmlGetAttr,"href")
 essaie_node3=data.table(do.call(rbind,essaie_nodes2))
+essaie_nodes4=lapply(essaie_nodes,xmlValue)
+essaie_node5=data.table(do.call(rbind,essaie_nodes4))
 
-essaie_node3[grep("schools",V1)]
+
+essaie81=essaie_node3[grep("schools",V1)]
+essaie8=essaie81[1:min(grep("2001",V1))]
+
+essaie6=essaie_node5[grep("[[:digit:]]",V1)]
+essaie7=essaie6[1:min(grep("2000",V1))]
+
+cbind(essaie7,paste(rep(base_url,nrow(essaie8)),essaie8[,V1],sep=""))
 
