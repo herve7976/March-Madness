@@ -1,7 +1,7 @@
 library(XML)
 library(data.table)
 
-# setwd("") # A faire au tout debut
+# setwd("C:/Users/Herve/Dropbox/Projet/Projets R/March-Madness")
 
 result_season_h=fread("regular_season_compact_results.csv",header=TRUE)
 # str(result_season_h)
@@ -87,11 +87,11 @@ require(plyr)
 
 all_team_ever= readHTMLTable("http://www.sports-reference.com/cbb/schools/")
 all_team_ever2=data.table(ldply(all_team_ever, data.frame))
-View(all_team_ever2)
-str(all_team_ever2)
+# View(all_team_ever2)
+# str(all_team_ever2)
 setkey(all_team_ever2,From)
 all_team_ever3=all_team_ever2[!"From"]
-str(all_team_ever3)
+# str(all_team_ever3)
 all_team_ever4=all_team_ever3[,.id:=NULL]
 ### Prendre les urls et faire de la magie
 
@@ -120,50 +120,57 @@ team_hacked2=merge(all_team_ever4,team_hack1)
 # Aller chercher pour chaque equipe les joueurs ---------------------------
 base_url="http://www.sports-reference.com"
 paste_url=paste(rep("http://www.sports-reference.com",nrow(team_hacked2)),team_hacked2[,team_url],sep="")
-team_hacked3=cbind(team_hacked2,paste_url)
-team_hacked4=team_hacked3[,team_url:=NULL]
-team_hacked4$From=as.numeric(as.character(team_hacked4$From))
-
-team_hacked4$To=as.numeric(as.character(team_hacked4$To)) #Extraction deja faite
-# write.table(team_hacked4,"all_team_ever.txt") #Extraction deja faite
-
+ team_hacked3=cbind(team_hacked2,paste_url)
+ team_hacked4=team_hacked3[,team_url:=NULL]
+ team_hacked4$From=as.numeric(as.character(team_hacked4$From))
+ team_hacked4$To=as.numeric(as.character(team_hacked4$To)) #Extraction deja faite
+#  write.table(team_hacked4,"all_team_ever.txt") #Extraction deja faite
+# team_hacked4=fread("all_team_ever.txt",sep=" ",header=FALSE)
+# bla=read.table("all_team_ever.txt",sep=" ")
 team_hacked5=team_hacked4[From<=2000]
 team_hacked6=team_hacked4[From>2000]
 team_hacked7=team_hacked5[To>2000]
 team_hacked8=team_hacked6[To>2000]
 
-teams_seasons_url=data.table()
-find_seasons_url_2000=function(x){
-  
-    
-  essaie_url=getURL(team_hacked4[x,paste_url])
-  essaie_doc=htmlParse(essaie_url)
-  essaie_nodes=getNodeSet(essaie_doc,"//table[@id]//td[@align='left']//a")
-  essaie_nodes2=lapply(essaie_nodes,xmlGetAttr,"href")
-  essaie_node3=data.table(do.call(rbind,essaie_nodes2))
-  essaie_nodes4=lapply(essaie_nodes,xmlValue)
-  essaie_node5=data.table(do.call(rbind,essaie_nodes4))
-  
-  
-  essaie1=essaie_node3[grep("schools",V1)]
-#   essaie2=essaie1[1:min(grep("2001",V1))]
-  essaie3=essaie_node5[grep("[[:digit:]]",V1)]
-  essaie3$V1=as.character(essaie3$V1)
-  c=grepl("[a-zA-Z]",essaie3$V1)
 
-  if(length(c[c==TRUE])>0){
-    
-    essaie4=essaie3[-grep("[a-zA-Z]",V1)]
-  }else{
-    essaie4=essaie3
-  }  
-  essaie5=cbind(rep(team_hacked4[x,team_name],nrow(essaie1)),seasons=essaie4,seasons_url=paste(rep(base_url,nrow(essaie1)),essaie1[,V1],sep=""))
-  essaie5$season=as.numeric(substr(as.character(essaie5$seasons.V1),1,4))
-  essaie6=essaie5[season>=2000]
+# find_seasons_url_2000=function(x){
+#   
+#     
+#   essaie_url=getURL(team_hacked4[x,paste_url])
+#   essaie_doc=htmlParse(essaie_url)
+#   essaie_nodes=getNodeSet(essaie_doc,"//table[@id]//td[@align='left']//a")
+#   essaie_nodes2=lapply(essaie_nodes,xmlGetAttr,"href")
+#   essaie_node3=data.table(do.call(rbind,essaie_nodes2))
+#   essaie_nodes4=lapply(essaie_nodes,xmlValue)
+#   essaie_node5=data.table(do.call(rbind,essaie_nodes4))
+#   
+#   
+#   essaie1=essaie_node3[grep("schools",V1)]
+# #   essaie2=essaie1[1:min(grep("2001",V1))]
+#   essaie3=essaie_node5[grep("[[:digit:]]",V1)]
+#   essaie3$V1=as.character(essaie3$V1)
+#   c=grepl("[a-zA-Z]",essaie3$V1)
+# 
+#   if(length(c[c==TRUE])>0){
+#     
+#     essaie4=essaie3[-grep("[a-zA-Z]",V1)]
+#   }else{
+#     essaie4=essaie3
+#   }  
+#   essaie5=cbind(rep(team_hacked4[x,team_name],nrow(essaie1)),seasons=essaie4,seasons_url=paste(rep(base_url,nrow(essaie1)),essaie1[,V1],sep=""))
+#   essaie5$season=as.numeric(substr(as.character(essaie5$seasons.V1),1,4))
+#   essaie6=essaie5[season>=2000]
+# 
+# }
+# 
+# # teams_seasons_url=lapply(1:nrow(team_hacked4),find_seasons_url_2000)
+ teams_seasons_url2=do.call(rbind,teams_seasons_url)
 
-}
+setnames(teams_seasons_url2,names(teams_seasons_url2),c("team_name","season_name","seasons_url","season"))
+write.table(names(teams_seasons_url2),"names_teams_seasons_url.txt")
+write.table(teams_seasons_url2,"teams_seasons_url.txt")
+# Aller cherches tous les joueurs de chaque equipe et de chaque sa --------
 
-teams_seasons_url=lapply(100:150,find_seasons_url_2000)
-teams_seasons_url2=do.call(rbind,teams_seasons_url)
+names(teams_seasons_url2)
 
 # Everythings seems good
