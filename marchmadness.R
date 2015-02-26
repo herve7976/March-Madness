@@ -136,7 +136,7 @@ team_hacked8=team_hacked6[To>2000]
 # find_seasons_url_2000=function(x){
 #   
 #     
-#   essaie_url=getURL(team_hacked4[x,paste_url])
+#   essaie_url=getURL(team_hacked4[1,paste_url])
 #   essaie_doc=htmlParse(essaie_url)
 #   essaie_nodes=getNodeSet(essaie_doc,"//table[@id]//td[@align='left']//a")
 #   essaie_nodes2=lapply(essaie_nodes,xmlGetAttr,"href")
@@ -171,6 +171,6 @@ write.table(names(teams_seasons_url2),"names_teams_seasons_url.txt")
 write.table(teams_seasons_url2,"teams_seasons_url.txt")
 # Aller cherches tous les joueurs de chaque equipe et de chaque sa --------
 
-names(teams_seasons_url2)
 
+# un gros changement a partir de 2011 pour ce qui est des données
 # Everythings seems good
