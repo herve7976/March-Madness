@@ -12,7 +12,9 @@ herve=function(x)
   top5_team=team[team_id %in% head(result_2014[,wteam],5)]
 }
 
-herve2=lapply(unique(result_season_h[order(season,decreasing=TRUE),season]),herve)
+bla2=readHTMLTable("http://www.sports-reference.com/cbb/schools/youngstown-state/2000.html")
+
+bherve2=lapply(unique(result_season_h[order(season,decreasing=TRUE),season]),herve)
 
 herve3=do.call(rbind,herve2)
 
@@ -73,3 +75,23 @@ essaie7=essaie6[1:min(grep("2000",V1))]
 
 cbind(essaie7,paste(rep(base_url,nrow(essaie8)),essaie8[,V1],sep=""))
 
+
+bla2=readHTMLTable("http://www.sports-reference.com/cbb/schools/youngstown-state/2000.html")
+
+bla3=readHTMLTable("http://www.sports-reference.com/cbb/schools/youngstown-state/2010.html")
+
+str(bla2)
+str(bla3)
+
+teams_seasons_url2
+
+seasons_joueurs_nouveaux=teams_seasons_url2[season>=2010]
+seasons_joueurs_anciens=teams_seasons_url2[season<2010]
+
+ahmed=function(x){
+  
+  readHTMLTable(seasons_joueurs_anciens[x,seasons_url])
+}
+kris=sapply(1:5,ahmed)
+
+length(readHTMLTable(seasons_joueurs_anciens[1]))
