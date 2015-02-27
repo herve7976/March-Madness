@@ -1,7 +1,9 @@
 library(XML)
 library(data.table)
+require(RCurl)
+require(plyr)
 
-# setwd("C:/Users/Herve/Dropbox/Projet/Projets R/March-Madness")
+ setwd("C:/Users/Herve/Dropbox/Projet/Projets R/March-Madness")
 
 result_season_h=fread("regular_season_compact_results.csv",header=TRUE)
 # str(result_season_h)
@@ -81,9 +83,6 @@ annee_winners_top3=head(annee_winners3[,team_name],3)
 
 ####premier web scrapping
 
-require(RCurl)
-require(plyr)
-
 
 all_team_ever= readHTMLTable("http://www.sports-reference.com/cbb/schools/")
 all_team_ever2=data.table(ldply(all_team_ever, data.frame))
@@ -135,7 +134,7 @@ team_hacked8=team_hacked6[To>2000]
 
 # find_seasons_url_2000=function(x){
 #   
-#     
+#     kris
 #   essaie_url=getURL(team_hacked4[1,paste_url])
 #   essaie_doc=htmlParse(essaie_url)
 #   essaie_nodes=getNodeSet(essaie_doc,"//table[@id]//td[@align='left']//a")
@@ -171,6 +170,66 @@ write.table(names(teams_seasons_url2),"names_teams_seasons_url.txt")
 write.table(teams_seasons_url2,"teams_seasons_url.txt")
 # Aller cherches tous les joueurs de chaque equipe et de chaque sa --------
 
+teams_seasons_url2=fread("teams_seasons_url.txt",sep=" ")
+teams_seasons_url2=fread("teams_seasons_url.txt",sep=" ")
+names_ts=fread("names_teams_seasons_url.txt",header=FALSE)
+teams_seasons_url2=teams_seasons_url2[,V1:=NULL]
+setnames(teams_seasons_url2,names(teams_seasons_url2),names_ts[,V2])
+seasons_joueurs_nouveaux=teams_seasons_url2[season>=2010]
+seasons_joueurs_anciens=teams_seasons_url2[season<2010]
+n_anciens=nrow(seasons_joueurs_anciens)
+n_nouveaux=nrow(seasons_joueurs_nouveaux)
 
-# un gros changement a partir de 2011 pour ce qui est des données
+
+source("fonctions de recherches pour les joueurs.R")
+
+
+everything_player=lapply(1:n_anciens,get_everything_anciens)
+roster_players_a=lapply(1:n_anciens,get_roster_a)
+team_stats_players_a=lapply(1:n_anciens,get_team_stats_a)
+totals_players_a=lapply(1:n_anciens,get_totals_a)
+per_game_players_a=lapply(1:n_anciens,get_per_game_a)
+per_min_players_a=lapply(1:n_anciens,get_per_min_a)
+per_poss_players_a=lapply(1:n_anciens,get_per_poss_a)
+advanced_players_a=lapply(1:n_anciens,get_advanced_a)
+
+data_roster_a=data.table(do.call(rbind,roster_players_a))
+data_team_stats_a=data.table(do.call(rbind,team_stats_players_a))
+data_totals_a=data.table(do.call(rbind,totals_players_a))
+data_per_game_a=data.table(do.call(rbind,per_game_players_a))
+data_per_min_a=data.table(do.call(rbind,per_min_players_a))
+data_per_poss_a=data.table(do.call(rbind,per_poss_players_a))
+data_advanced_a=data.table(do.call(rbind,advanced_players_a))
+
+
+
+everything_player=lapply(1:n_nouveaux,get_everything_nouveaux)
+roster_players_n=lapply(1:n_nouveaux,get_roster_n)
+team_stats_players_n=lapply(1:n_nouveaux,get_team_stats_n)
+totals_players_n=lapply(1:n_nouveaux,get_totals_n)
+per_game_players_n=lapply(1:n_nouveaux,get_per_game_n)
+per_min_players_n=lapply(1:n_nouveaux,get_per_min_n)
+per_poss_players_n=lapply(1:n_nouveaux,get_per_poss_n)
+advanced_players_n=lapply(1:n_nouveaux,get_advanced_n)
+team_stats_players_conf_n=lapply(1:n_nouveaux,get_team_stats_conf_n)
+totals_players_conf_n=lapply(1:n_nouveaux,get_totals_conf_n)
+per_game_players_conf_n=lapply(1:n_nouveaux,get_per_game_conf_n)
+per_min_players_conf_n=lapply(1:n_nouveaux,get_per_min_conf_n)
+per_poss_players_conf_n=lapply(1:n_nouveaux,get_per_poss_conf_n)
+advanced_players_conf_n=lapply(1:n_nouveaux,get_advanced_conf_n)
+
+data_roster_n=data.table(do.call(rbind,roster_players_n))
+data_team_stats_n=data.table(do.call(rbind,team_stats_players_n))
+data_totals_n=data.table(do.call(rbind,totals_players_n))
+data_per_game_n=data.table(do.call(rbind,per_game_players_n))
+data_per_min_n=data.table(do.call(rbind,per_min_players_n))
+data_per_poss_n=data.table(do.call(rbind,per_poss_players_n))
+data_advanced_n=data.table(do.call(rbind,advanced_players_n))
+data_team_stats_conf_n=data.table(do.call(rbind,team_stats_players_conf_n))
+data_totals_conf_n=data.table(do.call(rbind,totals_players_conf_n))
+data_per_game_conf_n=data.table(do.call(rbind,per_game_players_conf_n))
+data_per_min_conf_n=data.table(do.call(rbind,per_min_players_conf_n))
+data_per_poss_conf_n=data.table(do.call(rbind,per_poss_players_conf_n))
+data_advanced_conf_n=data.table(do.call(rbind,advanced_players_conf_n))
+# un gros changement a partir de n_nouveaux11 pour ce qui est des données
 # Everythings seems good
