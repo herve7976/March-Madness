@@ -58,16 +58,30 @@ for (tm in c(1104))
   # Only Stats from team 'tm'
   xw <- regSeasonDetailed.dt[regSeasonDetailed.dt$wteam == tm,]
   xl <- regSeasonDetailed.dt[regSeasonDetailed.dt$lteam == tm,]
-  # Creating one single dataset
-  xw <- sqldf('select season,daynum,numot,wloc,wteam,wscore,wfgm,wfga ,wfgm3 ,wfga3 ,wftm,wfta,wor,wdr,wast,wto,wstl,wblk,wpf from xw')
-  xl <- sqldf('select season,daynum,numot,wloc,lteam,lscore,lfgm,lfga ,lfgm3 ,lfga3 ,lftm,lfta,lor,ldr,last,lto,lstl,lblk,lpf from xl')
+  # Selecting the team's stats vs opponent's stats
+  xw_tm <- sqldf('select season,daynum,numot,wloc,wteam,wscore,wfgm,wfga ,wfgm3 ,wfga3 ,wftm,wfta,wor,wdr,wast,wto,wstl,wblk,wpf from xw')
+  xl_tm <- sqldf('select season,daynum,numot,wloc,lteam,lscore,lfgm,lfga ,lfgm3 ,lfga3 ,lftm,lfta,lor,ldr,last,lto,lstl,lblk,lpf from xl')
+  
+  xw_op <- sqldf('select season,daynum,numot,wloc,lteam,lscore,lfgm,lfga ,lfgm3 ,lfga3 ,lftm,lfta,lor,ldr,last,lto,lstl,lblk,lpf from xw')
+  xl_op <- sqldf('select season,daynum,numot,wloc,wteam,wscore,wfgm,wfga ,wfgm3 ,wfga3 ,wftm,wfta,wor,wdr,wast,wto,wstl,wblk,wpf from xl')
+  
   #Inverser les Home & Away 
-  AreAs <- which(xl$wloc=="A")
-  xl[AreAs,]$wloc <- "H"
-  xl[-AreAs,]$wloc <- "A"
+  AreAs <- which(xl_tm$wloc=="A")
+  xl_tm[AreAs,]$wloc <- "H"
+  xl_tm[-AreAs,]$wloc <- "A"
   #Changing Names
-  colnames(xl) <- c("season","daynum","numot","loc","team","score","fgm","fga ","fgm3 ","fga3 ","ftm","fta","or","dr","ast","to","stl","blk","pf")
-  colnames(xw) <- c("season","daynum","numot","loc","team","score","fgm","fga ","fgm3 ","fga3 ","ftm","fta","or","dr","ast","to","stl","blk","pf")
+  colnames(xl_tm) <- c("season","daynum","numot","loc","team","score","fgm","fga ","fgm3 ","fga3 ","ftm","fta","or","dr","ast","to","stl","blk","pf")
+  colnames(xw_tm) <- c("season","daynum","numot","loc","team","score","fgm","fga ","fgm3 ","fga3 ","ftm","fta","or","dr","ast","to","stl","blk","pf")
+  colnames(xl_op) <- c("season","daynum","opnumot","oploc","opteam","opscore","opfgm","opfga ","opfgm3 ","opfga3 ","opftm","opfta","opor","opdr","opast","opto","opstl","opblk","oppf")
+  colnames(xw_op) <- c("season","daynum","opnumot","oploc","opteam","opscore","opfgm","opfga ","opfgm3 ","opfga3 ","opftm","opfta","opor","opdr","opast","opto","opstl","opblk","oppf") 
+  #Merging per game
+  setkey(xl_tm,season,daynum)
+  setkey(xl_op,season,daynum)
+  setkey(xw_tm,season,daynum)
+  setkey(xw_op,season,daynum)
+  xl <- merge(xl_tm, xl_op, by=c("season","daynum"),all.y=TRUE)
+  xw <- merge(xw_tm, xw_op, by=c("season","daynum"),all.y=TRUE)
+  
   #Unioning them back together
   x <- data.table(rbind(xl, xw))
   # In ascending order of season and daynum
@@ -77,10 +91,16 @@ for (tm in c(1104))
   ssn <- 2003
   for (ssn in seq(min(x$season),max(x$season)))
   {
+    #Subsetting per season
     xssn <- x[x$season == ssn,]
+    
+    #Building differential confrontational stats per game
+    
+    #TimeSerie-ing the shit out of it.
+
     xssn$matchnum <- 1
     xssn2 <- data.table(apply(xssn,FUN=cumsum,MARGIN=2))
-    
+    xxsn3 <- data.table(apply(xssn2[c(3,5:)],FUN=))    
   }
 }
 
@@ -115,7 +135,9 @@ for (tm in c(1104))
 #         Winnings (1,0)
 #         Points per game
 #         Sandardized points differential per game
-#         Everything found in regSeasonDetailed
+#         Everything found in regSeasonDetailed respective to the opponent's team.
+#           Ex : I will never use 'average free throws' but always 'average free throws differential'
+#             Thinking : The isolated stats are not important.  Its the confrontation that matters.
 #
 # Build intra-region ranking based on nb of points in intra-region games (ie teamA > teamB)
 # build inter-region ranking based on nb of points in inter-region games (ie regA > regB)
