@@ -75,178 +75,96 @@ essaie7=essaie6[1:min(grep("2000",V1))]
 
 cbind(essaie7,paste(rep(base_url,nrow(essaie8)),essaie8[,V1],sep=""))
 
-
-bla2=readHTMLTable("http://www.sports-reference.com/cbb/schools/youngstown-state/2000.html")
-
-bla3=readHTMLTable("http://www.sports-reference.com/cbb/schools/youngstown-state/2010.html")
-
-str(bla2)
-str(bla3)
-
-teams_seasons_url2
-
-seasons_joueurs_nouveaux=teams_seasons_url2[season>=2010]
-seasons_joueurs_anciens=teams_seasons_url2[season<2010]
-
-get_everything_anciens=function(x){readHTMLTable(seasons_joueurs_anciens[x,seasons_url])}
-
-get_roster_a=function(x){
-
-  cbind(everything_player[[x]]$roster,team_name=rep(seasons_joueurs_anciens[x,team_name],nrow(everything_player[[x]]$roster)),season=rep(seasons_joueurs_anciens[x,season],nrow(everything_player[[x]]$roster)))
-}
-get_team_stats_a=function(x){
-  
-  cbind(everything_player[[x]]$team_stats,team_name=rep(seasons_joueurs_anciens[x,team_name],nrow(everything_player[[x]]$team_stats)),season=rep(seasons_joueurs_anciens[x,season],nrow(everything_player[[x]]$team_stats)))
-  
-}
-
-get_totals_a=function(x){
-  
-  
-  cbind(everything_player[[x]]$totals,team_name=rep(seasons_joueurs_anciens[x,team_name],nrow(everything_player[[x]]$totals)),season=rep(seasons_joueurs_anciens[x,season],nrow(everything_player[[x]]$totals)))
-}
-
-get_per_game_a=function(x){
-  
-  cbind(everything_player[[x]]$per_game,team_name=rep(seasons_joueurs_anciens[x,team_name],nrow(everything_player[[x]]$per_game)),season=rep(seasons_joueurs_anciens[x,season],nrow(everything_player[[x]]$per_game)))
-}
-
-get_per_min_a=function(x){
-  
-  cbind(everything_player[[x]]$per_min,team_name=rep(seasons_joueurs_anciens[x,team_name],nrow(everything_player[[x]]$per_min)),season=rep(seasons_joueurs_anciens[x,season],nrow(everything_player[[x]]$per_min)))
-}
-
-get_per_poss_a=function(x){
-  
-  cbind(everything_player[[x]]$per_poss,team_name=rep(seasons_joueurs_anciens[x,team_name],nrow(everything_player[[x]]$per_poss)),season=rep(seasons_joueurs_anciens[x,season],nrow(everything_player[[x]]$per_poss)))
-}
-
-get_advanced_a=function(x){
-  
-  cbind(everything_player[[x]]$advanced,team_name=rep(seasons_joueurs_anciens[x,team_name],nrow(everything_player[[x]]$advanced)),season=rep(seasons_joueurs_anciens[x,season],nrow(everything_player[[x]]$advanced)))
-}
-
-everything_player=lapply(1:20,get_everything_a)
-roster_players_a=lapply(1:20,get_roster_a)
-team_stats_players_a=lapply(1:20,get_team_stats_a)
-totals_players_a=lapply(1:20,get_totals_a)
-per_game_players_a=lapply(1:20,get_per_game_a)
-per_min_players_a=lapply(1:20,get_per_min_a)
-per_poss_players_a=lapply(1:20,get_per_poss_a)
-advanced_players_a=lapply(1:20,get_advanced_a)
-
-data_roster_a=data.table(do.call(rbind,roster_players_a))
-data_team_stats_a=data.table(do.call(rbind,team_stats_players_a))
-data_totals_a=data.table(do.call(rbind,totals_players_a))
-data_per_game_a=data.table(do.call(rbind,per_game_players_a))
-data_per_min_a=data.table(do.call(rbind,per_min_players_a))
-data_per_poss_a=data.table(do.call(rbind,per_poss_players_a))
-data_advanced_a=data.table(do.call(rbind,advanced_players_a))
+team_2014=teams_seasons_url2[season==2014]
 
 
+x=data.table(tourney_d_h[season==2014]$wteam)
+y=data.table(tourney_d_h[season==2014]$lteam)
 
+team_tourney_2014=rbind(x,y)
+setnames(team_tourney_2014,"V1","team_id")
+team_tourney_2014=unique(team_tourney_2014)
+setkey(team,team_id)
+setkey(team_tourney_2014,team_id)
 
+team_tourney_2014_2=merge(team,team_tourney_2014)
+team_tourney_2014_3=team_tourney_2014_2[order(team_name)]
 
+liste_nom=unique(teams_seasons_url2$team_name)
+name_tourney=data.table(team_name_bis=c(
+"Albany (NY) Great Danes",
+"American Eagles",
+"Arizona Wildcats",
+"Arizona State Sun Devils",
+"Baylor Bears",
+"Brigham Young Cougars",
+"Cal Poly Mustangs" ,
+"Cincinnati Bearcats",
+"Coastal Carolina Chanticleers", 
+"Colorado Buffaloes",
+"Connecticut Huskies",
+"Creighton Bluejays",
+"Dayton Flyers",
+"Delaware Fightin' Blue Hens",
+"Duke Blue Devils",
+"Eastern Kentucky Colonels",
+"Florida Gators",
+"George Washington Colonials",
+"Gonzaga Bulldogs",
+"Harvard Crimson",
+"Iowa Hawkeyes" ,
+"Iowa State Cyclones",
+"Kansas Jayhawks",
+"Kansas State Wildcats",
+"Kentucky Wildcats",
+"Louisville Cardinals",
+"Manhattan Jaspers",
+"Massachusetts Minutemen",
+"Memphis Tigers",
+"Mercer Bears",
+"Michigan Wolverines",
+"Michigan State Spartans",
+"Mount St. Mary's Mountaineers", 
+"North Dakota State Bison",  
+"North Carolina Central Eagles",
+"North Carolina State Wolfpack",
+"Nebraska Cornhuskers",
+"New Mexico Lobos",
+"New Mexico State Aggies",
+"North Carolina Tar Heels",
+"Ohio State Buckeyes",
+"Oklahoma Sooners",
+"Oklahoma State Cowboys",
+"Oregon Ducks",
+"Pittsburgh Panthers",
+"Providence Friars",
+"San Diego Toreros",
+"San Diego State Aztecs", 
+"Saint Joseph's Hawks",
+"Saint Louis Billikens",
+"Stanford Cardinal",
+"Syracuse Orange",
+"Tennessee Volunteers",
+"Texas Longhorns",
+"Tulsa Golden Hurricane",
+"Texas Southern Tigers",
+"UCLA Bruins" ,
+"Louisiana-Lafayette Ragin' Cajuns",
+"Virginia Commonwealth Rams",
+"Villanova Wildcats",
+"Virginia Cavaliers",
+"Western Michigan Broncos",  
+"Weber State Wildcats", 
+"Milwaukee Panthers",
+"Wichita State Shockers",
+"Wisconsin Badgers", 
+"Wofford Terriers",
+"Xavier Musketeers"))
 
-# POUR LES NOUVEAUX -------------------------------------------------------
+team_name_tourney_2014_4=cbind(team_tourney_2014_3,name_tourney)
 
+"http://www.sports-reference.com/cbb/schools/virginia-commonwealth/2014-schedule.html"
 
-
-
-
-get_everything_nouveaux=function(x){readHTMLTable(seasons_joueurs_nouveaux[x,seasons_url])}
-
-get_advanced_conf_n=function(x){
-  
-  cbind(everything_player[[x]]$advanced_conf,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$advanced_conf)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$advanced_conf)))
-}
-get_per_game_conf_n=function(x){
-  
-  cbind(everything_player[[x]]$per_game_conf,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$per_game_conf)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$per_game_conf)))
-}
-
-get_per_min_conf_n=function(x){
-  
-  cbind(everything_player[[x]]$per_min_conf,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$per_min_conf)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$per_min_conf)))
-}
-
-get_per_poss_conf_n=function(x){
-  
-  cbind(everything_player[[x]]$per_poss_conf,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$per_poss_conf)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$per_poss_conf)))
-}
-
-get_totals_conf_n=function(x){
-  
-  cbind(everything_player[[x]]$totals_conf,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$totals_conf)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$totals_conf)))
-}
-
-get_team_stats_conf_n=function(x){
-  
-  cbind(everything_player[[x]]$team_stats_conf,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$team_stats_conf)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$team_stats_conf)))
-}
-
-get_roster_n=function(x){
-  
-  cbind(everything_player[[x]]$roster,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$roster)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$roster)))
-}
-
-get_team_stats_n=function(x){
-  
-  cbind(everything_player[[x]]$team_stats,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$team_stats)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$team_stats)))
-  
-}
-
-get_totals_n=function(x){
-  
-  
-  cbind(everything_player[[x]]$totals,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$totals)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$totals)))
-}
-
-get_per_game_n=function(x){
-  
-  cbind(everything_player[[x]]$per_game,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$per_game)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$per_game)))
-}
-
-get_per_min_n=function(x){
-  
-  cbind(everything_player[[x]]$per_min,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$per_min)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$per_min)))
-}
-
-get_per_poss_n=function(x){
-  
-  cbind(everything_player[[x]]$per_poss,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$per_poss)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$per_poss)))
-}
-
-get_advanced_n=function(x){
-  
-  cbind(everything_player[[x]]$advanced,team_name=rep(seasons_joueurs_nouveaux[x,team_name],nrow(everything_player[[x]]$advanced)),season=rep(seasons_joueurs_nouveaux[x,season],nrow(everything_player[[x]]$advanced)))
-}
-
-everything_player=lapply(1:20,get_everything_nouveaux)
-roster_players_n=lapply(1:20,get_roster_n)
-team_stats_players_n=lapply(1:20,get_team_stats_n)
-totals_players_n=lapply(1:20,get_totals_n)
-per_game_players_n=lapply(1:20,get_per_game_n)
-per_min_players_n=lapply(1:20,get_per_min_n)
-per_poss_players_n=lapply(1:20,get_per_poss_n)
-advanced_players_n=lapply(1:20,get_advanced_n)
-team_stats_players_conf_n=lapply(1:20,get_team_stats_conf_n)
-totals_players_conf_n=lapply(1:20,get_totals_conf_n)
-per_game_players_conf_n=lapply(1:20,get_per_game_conf_n)
-per_min_players_conf_n=lapply(1:20,get_per_min_conf_n)
-per_poss_players_conf_n=lapply(1:20,get_per_poss_conf_n)
-advanced_players_conf_n=lapply(1:20,get_advanced_conf_n)
-
-data_roster_n=data.table(do.call(rbind,roster_players_n))
-data_team_stats_n=data.table(do.call(rbind,team_stats_players_n))
-data_totals_n=data.table(do.call(rbind,totals_players_n))
-data_per_game_n=data.table(do.call(rbind,per_game_players_n))
-data_per_min_n=data.table(do.call(rbind,per_min_players_n))
-data_per_poss_n=data.table(do.call(rbind,per_poss_players_n))
-data_advanced_n=data.table(do.call(rbind,advanced_players_n))
-data_team_stats_conf_n=data.table(do.call(rbind,team_stats_players_conf_n))
-data_totals_conf_n=data.table(do.call(rbind,totals_players_conf_n))
-data_per_game_conf_n=data.table(do.call(rbind,per_game_players_conf_n))
-data_per_min_conf_n=data.table(do.call(rbind,per_min_players_conf_n))
-data_per_poss_conf_n=data.table(do.call(rbind,per_poss_players_conf_n))
-data_advanced_conf_n=data.table(do.call(rbind,advanced_players_conf_n))
+essaie=getURL("http://www.sports-reference.com/cbb/schools/virginia-commonwealth/2014-schedule.html")
+essaie2=htmlParse(essaie)
+essaie3=getNodeSet(essaie2,"//table[@id='schedule']//td[@csk]//a")

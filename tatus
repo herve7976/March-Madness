@@ -1,0 +1,71 @@
+commit 0cdd0ace1d2bfa6da3ec6192fbc4f7967b2ebb03
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Thu Feb 26 20:55:55 2015 -0800
+
+    New files baby
+
+commit f4bafa577ea5a01d2a0779e13462d3d95392a467
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Wed Feb 25 18:03:57 2015 -0800
+
+    Up to date
+
+commit ddb3734416e1ce79ac10a22a8ca8483dc96ed638
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Wed Feb 25 18:02:53 2015 -0800
+
+    A suivre ce soir
+
+commit 9ba96d5122a3c52ebb3bae13571ec6f34cc09d77
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Wed Feb 25 16:24:27 2015 -0800
+
+    Nouveaux fichiers
+
+commit f43297c3027de6f3742dffa598c60158b95bc628
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Wed Feb 25 13:23:38 2015 -0500
+
+    Everything seems good
+
+commit 43be52dd003929fe9ebe15b5a519b4c736f67bee
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Wed Feb 25 11:30:06 2015 -0500
+
+    Modifs
+
+commit 9b647f1c247f419933a3d923b4580d3910dffadc
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Wed Feb 25 10:13:58 2015 -0500
+
+    Cleaning
+
+commit 4a992270486b1fbe191f681eda363b5988b25401
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Tue Feb 24 22:06:50 2015 -0800
+
+     Modifie pour des petits tests
+
+commit 377bcd353be182eed5b9480ce76e4bebfd90a2e9
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Tue Feb 24 22:05:59 2015 -0800
+
+    Petit soucis au niveau du web scrapping pour les saisons. Il y a des petites exceptions qui empeche le fonctionnement de la fonction find_teams seasons. Bloque a essaie3
+
+commit 825b14012f74909ad4d208b032731f541ccddd77
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Tue Feb 24 21:26:46 2015 -0800
+
+    Nouveaux fichiers ajoutes
+
+commit 9e9e65fda624d79abca6790df1a4213fc56f5454
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Tue Feb 24 17:21:40 2015 -0800
+
+    Toutes les donnees sur le site sont maintenant dispoibles
+
+commit b76f73625b800090a08d01d73f14630636141226
+Author: herve7976 <hmensah@hotmail.fr>
+Date:   Tue Feb 24 17:00:45 2015 -0800
+
+    Create README.md
